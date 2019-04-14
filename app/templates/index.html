@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+	<div class="row">
+		<div class="col-sm-6 col-md-4">
+			<div class="thumbnail">
+				<div class="caption">
+					<div class="text-center">
+						<img src="{{ url_for('static', filename='temp.png') }}" alt="Temperature">
+					</div>
+					<h3>Temperature sensor T1</h3>
+					<p id="random1">Temperature: N/A</p>
+					<p id="time">Last updated: N/A</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script type=text/javascript>
+		$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+	</script>
+	<script type=text/javascript>
+		$(function() {
+			function update() {
+				$.getJSON($SCRIPT_ROOT + '/_random',
+					{
+						temperature: true
+					},
+					function(data) {
+						$('#random1').text('Temperature: ' + data.number);
+						$('#time').text('Last updated: ' + data.time);
+					});
+			}
+			setInterval(update, 3000);
+			update();
+		});
+	</script>
+{% endblock %}
